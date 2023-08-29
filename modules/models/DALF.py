@@ -18,7 +18,7 @@ import os
 
 import torchvision.transforms as transforms
 
-from modules.tps import pytorch as TPS
+from DALF_CVPR_2023.modules.tps import pytorch as TPS
 #from modules import utils
 
 class DALF_extractor:
@@ -111,7 +111,7 @@ class DALF_extractor:
         for scale in scales:
           with torch.no_grad():
               img = cv2.resize(og_img, None, fx = scale, fy = scale, interpolation = cv2.INTER_AREA) if scale != 1. else og_img
-              img = torch.tensor(img, dtype = torch.float32, device=self.dev).permute(2,0,1).unsqueeze(0)/255.
+              img = torch.tensor(img[..., np.newaxis], dtype = torch.float32, device=self.dev).permute(2,0,1).unsqueeze(0)/255.
 
               kpts, descs, fmap = self.net(img, NMS = True, threshold = threshold, return_tensors = True, top_k = top_k)
               score_map = fmap['map'][0].squeeze(0).cpu().numpy()
